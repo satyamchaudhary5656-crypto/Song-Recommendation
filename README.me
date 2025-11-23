@@ -1,2 +1,105 @@
 
 HELLO SATYAM BHAI
+
+
+
+Project 
+Documentation: Real
+Time Facial Emotion 
+Detection 
+By- Satyam Chaudhary                  
+Reg. no.- 25BCE11095                                                               
+1. Introduction 
+This project implements a real-time facial emotion detection system using the OpenCV 
+library for video handling and the FER (Facial Expression Recognition) library for emotion 
+analysis. The application captures video from the local webcam, detects faces, 
+classifies the dominant emotion, and displays the results live. 
+2. Dependencies and Setup 
+This script requires several key Python packages. Ensure they are installed via pip: 
+Library 
+Purpose 
+Installation 
+Command 
+opencv
+python 
+Video capture, frame reading, and drawing graphics. pip install opencv
+python 
+fer 
+Facial Expression Recognition model (utilizes 
+MTCNN and Keras/TensorFlow). 
+pip install fer 
+tensorflow Core machine learning framework dependency for 
+fer. 
+keras 
+High-level API dependency for model definitions. 
+pip install 
+tensorflow 
+pip install keras 
+Installation using requirements.txt: 
+If you have saved the provided requirements.txt file, run: 
+Bash 
+pip install -r requirements.txt 
+3. Code Breakdown 
+The core logic resides in a single script that initializes the detector and processes the 
+video stream in a continuous loop. 
+3.1. Initialization 
+Python 
+import cv2 
+from fer import FER 
+detector = FER(mtcnn=True) 
+cap = cv2.VideoCapture(0) 
+• detector = FER(mtcnn=True): Creates the FER detector instance. Setting 
+mtcnn=True ensures the use of the MTCNN face detection model, which is highly 
+effective and robust, improving accuracy for subsequent emotion classification. 
+• cap = cv2.VideoCapture(0): Opens the default video camera (index 0). 
+3.2. Main Processing Loop 
+Python 
+while True: 
+ret, frame = cap.read() 
+if not ret: 
+break 
+results = detector.detect_emotions(frame) 
+# ... (Drawing logic) 
+cv2.imshow("Emotion Detection", frame) 
+if cv2.waitKey(1) & 0xFF == ord('q'): 
+break 
+• cap.read(): Reads the next frame. ret checks for successful read. 
+• results = detector.detect_emotions(frame): Performs face detection and emotion 
+classification. It returns a list of dictionaries, where each dictionary represents a 
+detected face. 
+3.3. Results Handling and Drawing 
+Python 
+if results: 
+for face in results: 
+(x, y, w, h) = face["box"] 
+emotion, score = detector.top_emotion(frame) 
+cv2.rectangle(frame, (x, y), (x+w, y+h), (0,255,0), 2) 
+cv2.putText(frame, f"{emotion} ({score:.2f})", ...) 
+• Iteration: The for face in results: loop processes every face detected in the frame. 
+• Bounding Box: (x, y, w, h) = face["box"] extracts the face coordinates. 
+cv2.rectangle draws a green box using these coordinates. 
+• Emotion Labeling: detector.top_emotion(frame) returns the highest-scoring 
+emotion (e.g., 'happy') and its confidence score. This information is displayed on 
+the frame using cv2.putText. 
+3.4. Cleanup 
+Python 
+cap.release() 
+cv2.destroyAllWindows() 
+• These lines ensure that the camera resource is properly released and all OpenCV 
+windows are closed when the main loop is terminated. 
+4. How to Run 
+1. Save the code as a Python file (e.g., app.py). 
+2. Install dependencies (see Section 2). 
+3. Run the script from the terminal: 
+Bash 
+python app.py 
+4. To exit the program, press the q key. 
+5. Customization (Optional) 
+Parameter 
+Description 
+cv2.VideoCapture(0) Change 0 to a different index (e.g., 1 or 2) if you have multiple 
+cameras. 
+FER(mtcnn=True) 
+To use a simpler Haar Cascade face detector instead of MTCNN 
+(less robust but potentially faster), you could initialize the 
+detector without the argument: detector = FER(). 
